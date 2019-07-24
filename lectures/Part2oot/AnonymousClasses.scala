@@ -1,4 +1,4 @@
-package lectures
+package lectures.Part2oot
 
 object AnonymousClasses extends App {
 
