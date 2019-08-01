@@ -24,7 +24,7 @@ abstract class MyList[+A] { //list of integer
   def ++[B >: A](list: MyList[B]): MyList[B]
 }
 
-object Empty extends MyList[Nothing] { // like the exception, empty should be a correct return type for any list
+case object Empty extends MyList[Nothing] { // like the exception, empty should be a correct return type for any list
   // def head: Int = throw new NoSuchElementException
   def head: Nothing = throw new NoSuchElementException
   def tail: MyList[Nothing] = throw new NoSuchElementException
@@ -39,7 +39,7 @@ object Empty extends MyList[Nothing] { // like the exception, empty should be a 
   def ++[B >: Nothing](list: MyList[B]): MyList[B] = list
 }
 
-class Cons[+A](h: A, t: MyList[A]) extends MyList[A] {
+case class Cons[+A](h: A, t: MyList[A]) extends MyList[A] {
   def head: A = h
   def tail: MyList[A] = t
   def isEmpty: Boolean = false
@@ -95,6 +95,7 @@ trait MyTransformer[-A,B] {
 
 object ListTest extends App {
   val listOfInt: MyList[Int] = new Cons(1, new Cons(2, new Cons(3, Empty)))
+  val cloneListOfInt: MyList[Int] = new Cons(1, new Cons(2, new Cons(3, Empty)))
   val anotherlistOfInt: MyList[Int] = new Cons(4, new Cons(5, Empty))
   val listOfString: MyList[String] = new Cons("Hello", new Cons("World", Empty))
 
@@ -118,4 +119,5 @@ object ListTest extends App {
   println(listOfInt.flatmap(new MyTransformer[Int, MyList[Int]] {
     override def transform(elem: Int): MyList[Int] = new Cons(elem, new Cons(elem + 1, Empty)) // here is the correct transformer again
   }).toString)
+  println(cloneListOfInt == listOfInt) // now this return true because of the power of case classes !
 }
